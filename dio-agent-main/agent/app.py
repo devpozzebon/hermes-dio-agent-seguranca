@@ -2,8 +2,8 @@ import sqlite3
 import hashlib
 import os
 
-ITERACOES = 100_000  # custo de derivação (aumente conforme o hardware)
-TAMANHO_SALT = 16    # bytes de salt aleatório
+ITERACOES = 100_000  
+TAMANHO_SALT = 16    
 
 
 def _gerar_hash(senha: str) -> str:
@@ -34,7 +34,7 @@ def fazer_login(usuario: str, senha: str) -> str:
     conexao = sqlite3.connect('banco_de_dados.db')
     try:
         cursor = conexao.cursor()
-        # Busca somente pelo usuário. A senha jamais entra na query.
+        .
         cursor.execute(
             "SELECT username, password FROM usuarios WHERE username = ?",
             (usuario,),
@@ -46,9 +46,6 @@ def fazer_login(usuario: str, senha: str) -> str:
     if resultado is None:
         return "Acesso Negado."
 
-    # A coluna 'password' deve armazenar o hash no formato
-    # 'salt_hex$hash_hex' (gerado por _gerar_hash). Ajuste o nome das
-    # colunas acima se o esquema real do banco for diferente.
     senha_armazenada = resultado[1]
     if not _verificar_hash(senha, senha_armazenada):
         return "Acesso Negado."
